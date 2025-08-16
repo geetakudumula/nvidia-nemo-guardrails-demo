@@ -1,0 +1,8 @@
+rails:
+  config:
+    allow_smalltalk: false
+    input_character_limit: 256
+
+constraints:
+  - "Stay on the spelling-bee quiz task only."
+  - "If the user asks for unrelated content, gently steer back to the quiz."

@@ -1,0 +1,79 @@
+# ===== Minimal Colang v1 (no intents, no loop, no parentheses) =====
+
+# Bot actions available from Python:
+# - get_next_word
+# - get_current
+# - check_spelling
+# - get_definition
+# - get_origin
+# - get_sentence
+# - get_progress
+
+# Start quiz (supports "start" and "start quiz")
+define flow start_flow_a
+  user says "start"
+  bot says "Okay! We'll do 5 words this round, hardest to easiest. Ready?"
+  do get_next_word as $w
+  bot says "Spell this word: {{$w}}"
+
+define flow start_flow_b
+  user says "start quiz"
+  bot says "Okay! We'll do 5 words this round, hardest to easiest. Ready?"
+  do get_next_word as $w
+  bot says "Spell this word: {{$w}}"
+
+# Definition / origin / sentence for current word
+define flow definition_flow
+  user says "definition"
+  do get_current as $c
+  do get_definition $c as $d
+  bot says "Definition: {{$d}}"
+
+define flow origin_flow
+  user says "origin"
+  do get_current as $c
+  do get_origin $c as $o
+  bot says "Origin: {{$o}}"
+
+define flow sentence_flow
+  user says "sentence"
+  do get_current as $c
+  do get_sentence $c as $s
+  bot says "Example: {{$s}}"
+
+# Spelling attempt: capture ANY free text that isn't one of our commands
+define flow answer_flow
+  user says $attempt
+  do get_current as $c
+  do check_spelling $c $attempt as $ok
+  if $ok == "true"
+    bot says "✅ Correct!"
+    do get_next_word as $n
+    if $n == ""
+      do get_progress as $p
+      bot says "Round complete. {{$p}}"
+    else
+      bot says "Next word: {{$n}}"
+  else
+    bot says "❌ Not quite. Try again or ask for definition/origin/sentence."
+
+# Skip to next word
+define flow next_flow
+  user says "next"
+  do get_next_word as $n2
+  if $n2 == ""
+    do get_progress as $p2
+    bot says "Round complete. {{$p2}}"
+  else
+    bot says "Next word: {{$n2}}"
+
+# End quiz
+define flow end_flow_a
+  user says "stop"
+  do get_progress as $p3
+  bot says "Stopping the quiz. {{$p3}}"
+
+define flow end_flow_b
+  user says "end"
+  do get_progress as $p4
+  bot says "Stopping the quiz. {{$p4}}"
