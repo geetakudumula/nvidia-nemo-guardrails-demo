@@ -1,1 +1,2 @@
-nemoguardrails==0.9.0
+nemoguardrails==0.15.0
+pandas
